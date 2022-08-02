@@ -455,7 +455,6 @@ def program_camera1(model,size,conf):
         # ghi vao D2000 gia tri 0
         fins_instance.memory_area_write(FinsPLCMemoryAreas().DATA_MEMORY_WORD,b'\x07\xD0\x00',b'\x00\x00',1)
 
-
         img1_convert = cv2.cvtColor(img1_orgin, cv2.COLOR_BGR2RGB)
 
         result1 = model(img1_convert,size= size,conf = conf) 
@@ -485,6 +484,10 @@ def program_camera1(model,size,conf):
                         elif height1 > int(values[f'{model1.names[i1]}_Hx_1']): 
                             table1.drop(item, axis=0, inplace=True)
                             area_remove1.append(item)
+                if values[f'{model1.names[i1]}_1'] == False:
+                    if label_name == model1.names[i1]:
+                        table1.drop(item, axis=0, inplace=True)
+                        area_remove1.append(item)
 
         names1 = list(table1['name'])
 
@@ -493,15 +496,15 @@ def program_camera1(model,size,conf):
 
         #ta = time.time()
         for i1 in range(len(model1.names)):
+            register_ng = (3002 + i1*2).to_bytes(2, byteorder='big') + b'\x00'
             if values[f'{model1.names[i1]}_OK_1'] == True:
                 len_name1 = 0
                 for name1 in names1:
                     if name1 == model1.names[i1]:
                         len_name1 +=1
                 if len_name1 != int(values[f'{model1.names[i1]}_Num_1']):
-                    # ghi vao D1000 gia tri 1 
-                    fins_instance.memory_area_write(FinsPLCMemoryAreas().DATA_MEMORY_WORD,b'\x03\xE8\x00',b'\x00\x01',1)
                     print('NG')
+                    fins_instance.memory_area_write(FinsPLCMemoryAreas().DATA_MEMORY_WORD,register_ng,b'\x00\x01',1)
                     t2 = time.time() - t1
                     print(t2) 
                     cv2.putText(show1, 'NG',(result_width_display,result_height_display),cv2.FONT_HERSHEY_COMPLEX, 4,(0,0,255),5)
@@ -510,13 +513,12 @@ def program_camera1(model,size,conf):
                         name_folder_ng = time_to_name()
                         cv2.imwrite(values['save_NG_1']  + '/' + name_folder_ng + '.jpg',img1_orgin)
                     myresult1 = 1
-                    break
+                    
 
             if values[f'{model1.names[i1]}_NG_1'] == True:
                 if model1.names[i1] in names1:
-                    # ghi vao D1000 gia tri 1 
-                    fins_instance.memory_area_write(FinsPLCMemoryAreas().DATA_MEMORY_WORD,b'\x03\xE8\x00',b'\x00\x01',1)
                     print('NG')
+                    fins_instance.memory_area_write(FinsPLCMemoryAreas().DATA_MEMORY_WORD,register_ng,b'\x00\x01',1)
                     t2 = time.time() - t1
                     print(t2) 
                     cv2.putText(show1, 'NG',(result_width_display,result_height_display),cv2.FONT_HERSHEY_COMPLEX, 4,(0,0,255),5)
@@ -525,12 +527,11 @@ def program_camera1(model,size,conf):
                         name_folder_ng = time_to_name()
                         cv2.imwrite(values['save_NG_1']  + '/' + name_folder_ng + '.jpg',img1_orgin)
                     myresult1 = 1         
-                    break    
+                       
 
         if myresult1 == 0:
-            # ghi vao D1002 gia tri 1 
-            fins_instance.memory_area_write(FinsPLCMemoryAreas().DATA_MEMORY_WORD,b'\x03\xEA\x00',b'\x00\x01',1)
             print('OK')
+            fins_instance.memory_area_write(FinsPLCMemoryAreas().DATA_MEMORY_WORD,(3000).to_bytes(2, byteorder='big') + b'\x00',b'\x00\x01',1)
             t2 = time.time() - t1
             print(t2) 
             cv2.putText(show1, 'OK',(result_width_display,result_height_display),cv2.FONT_HERSHEY_COMPLEX, 4,(0,255,0),5)
@@ -566,6 +567,7 @@ def program_camera2(model,size,conf):
         img2_convert = cv2.cvtColor(img2_orgin, cv2.COLOR_BGR2RGB)
 
         result2 = model(img2_convert,size= size,conf = conf) 
+
         table2 = result2.pandas().xyxy[0]
         area_remove2 = []
 
@@ -590,6 +592,10 @@ def program_camera2(model,size,conf):
                         elif height2 > int(values[f'{model2.names[i2]}_Hx_2']): 
                             table2.drop(item, axis=0, inplace=True)
                             area_remove2.append(item)
+                if values[f'{model2.names[i2]}_2'] == False:
+                    if label_name == model2.names[i2]:
+                        table2.drop(item, axis=0, inplace=True)
+                        area_remove2.append(item)
 
         names2 = list(table2['name'])
 
@@ -598,15 +604,15 @@ def program_camera2(model,size,conf):
 
         #ta = time.time()
         for i2 in range(len(model2.names)):
+            register_ng = (4002 + i1*2).to_bytes(2, byteorder='big') + b'\x00'
             if values[f'{model2.names[i2]}_OK_2'] == True:
                 len_name2 = 0
                 for name2 in names2:
                     if name2 == model2.names[i2]:
                         len_name2 +=1
                 if len_name2 != int(values[f'{model2.names[i2]}_Num_2']):
-                    # ghi vao D1010 gia tri 1 
-                    fins_instance.memory_area_write(FinsPLCMemoryAreas().DATA_MEMORY_WORD,b'\x03\xF2\x00',b'\x00\x01',1)
                     print('NG')
+                    fins_instance.memory_area_write(FinsPLCMemoryAreas().DATA_MEMORY_WORD,register_ng,b'\x00\x01',1)
                     t2 = time.time() - t1
                     print(t2) 
                     cv2.putText(show2, 'NG',(result_width_display,result_height_display),cv2.FONT_HERSHEY_COMPLEX, 4,(0,0,255),5)
@@ -615,13 +621,12 @@ def program_camera2(model,size,conf):
                         name_folder_ng = time_to_name()
                         cv2.imwrite(values['save_NG_2']  + '/' + name_folder_ng + '.jpg',img1_orgin)
                     myresult2 = 1
-                    break
+                    
 
             if values[f'{model2.names[i2]}_NG_2'] == True:
                 if model2.names[i2] in names2:
-                    # ghi vao D1010 gia tri 1 
-                    fins_instance.memory_area_write(FinsPLCMemoryAreas().DATA_MEMORY_WORD,b'\x03\xF2\x00',b'\x00\x01',1)
                     print('NG')
+                    fins_instance.memory_area_write(FinsPLCMemoryAreas().DATA_MEMORY_WORD,register_ng,b'\x00\x01',1)
                     t2 = time.time() - t1
                     print(t2) 
                     cv2.putText(show2, 'NG',(result_width_display,result_height_display),cv2.FONT_HERSHEY_COMPLEX, 4,(0,0,255),5)
@@ -630,12 +635,11 @@ def program_camera2(model,size,conf):
                         name_folder_ng = time_to_name()
                         cv2.imwrite(values['save_NG_2']  + '/' + name_folder_ng + '.jpg',img1_orgin)
                     myresult2 = 1         
-                    break    
+                     
 
         if myresult2 == 0:
-            # ghi vao D1012 gia tri 1 
-            fins_instance.memory_area_write(FinsPLCMemoryAreas().DATA_MEMORY_WORD,b'\x03\xF4\x00',b'\x00\x01',1)
             print('OK')
+            fins_instance.memory_area_write(FinsPLCMemoryAreas().DATA_MEMORY_WORD,(4000).to_bytes(2, byteorder='big') + b'\x00',b'\x00\x01',1)
             t2 = time.time() - t1
             print(t2) 
             cv2.putText(show2, 'OK',(result_width_display,result_height_display),cv2.FONT_HERSHEY_COMPLEX, 4,(0,255,0),5)
@@ -653,6 +657,185 @@ def program_camera2(model,size,conf):
         window['image2'].update(data= imgbytes2)
         print('---------------------------------------------')
 
+
+
+def test_pattern1(model,size,conf):
+    read_2004 = fins_instance.memory_area_read(FinsPLCMemoryAreas().DATA_MEMORY_WORD,b'\x07\xD4\x00') # doc thanh ghi 2004
+    if read_2004 ==b'\xc0\x00\x02\x00\x19\x00\x00\x01\x00`\x01\x01\x00@\x00%':  # gia tri 37
+
+        img1_orgin = my_callback1.image 
+        img1_orgin = img1_orgin[50:530,70:710]
+        img1_orgin = img1_orgin.copy()
+
+
+        # ghi vao D2004 gia tri 0
+        fins_instance.memory_area_write(FinsPLCMemoryAreas().DATA_MEMORY_WORD,b'\x07\xD4\x00',b'\x00\x00',1)
+
+
+        img1_orgin = cv2.cvtColor(img1_orgin, cv2.COLOR_BGR2RGB)     
+
+
+        result1 = model(img1_orgin,size= size,conf = conf) 
+
+        table1 = result1.pandas().xyxy[0]
+
+        area_remove1 = []
+
+        myresult1 =0 
+
+        for item in range(len(table1.index)):
+            width1 = table1['xmax'][item] - table1['xmin'][item]
+            height1 = table1['ymax'][item] - table1['ymin'][item]
+            #area1 = width1*height1
+            label_name = table1['name'][item]
+            for i1 in range(len(model1.names)):
+                if values[f'{model1.names[i1]}_1'] == True:
+                    #if values[f'{model1.names[i1]}_WH'] == True:
+                    if label_name == model1.names[i1]:
+                        if width1 < int(values[f'{model1.names[i1]}_Wn_1']): 
+                            table1.drop(item, axis=0, inplace=True)
+                            area_remove1.append(item)
+                        elif width1 > int(values[f'{model1.names[i1]}_Wx_1']): 
+                            table1.drop(item, axis=0, inplace=True)
+                            area_remove1.append(item)
+                        elif height1 < int(values[f'{model1.names[i1]}_Hn_1']): 
+                            table1.drop(item, axis=0, inplace=True)
+                            area_remove1.append(item)
+                        elif height1 > int(values[f'{model1.names[i1]}_Hx_1']): 
+                            table1.drop(item, axis=0, inplace=True)
+                            area_remove1.append(item)
+                if values[f'{model1.names[i1]}_1'] == False:
+                    if label_name == model1.names[i1]:
+                        table1.drop(item, axis=0, inplace=True)
+                        area_remove1.append(item)
+
+        names1 = list(table1['name'])
+
+        show1 = np.squeeze(result1.render(area_remove1))
+        show1 = cv2.resize(show1, (image_width_display,image_height_display), interpolation = cv2.INTER_AREA)
+
+        #ta = time.time()
+        for i1 in range(len(model1.names)):
+            register_ng = (3002 + i1*2).to_bytes(2, byteorder='big') + b'\x00'
+
+            if values[f'{model1.names[i1]}_OK_1'] == True:
+                len_name1 = 0
+                for name1 in names1:
+                    if name1 == model1.names[i1]:
+                        len_name1 +=1
+                if len_name1 != int(values[f'{model1.names[i1]}_Num_1']):
+                    print('NG')
+                    fins_instance.memory_area_write(FinsPLCMemoryAreas().DATA_MEMORY_WORD,register_ng,b'\x00\x01',1)
+                    cv2.putText(show1, 'NG',(result_width_display,result_height_display),cv2.FONT_HERSHEY_COMPLEX, 4,(0,0,255),5)
+                    window['result_cam1'].update(value= 'NG', text_color='red')
+                    myresult1 = 1
+                    
+
+            elif values[f'{model1.names[i1]}_NG_1'] == True:
+                if model1.names[i1] in names1:
+                    print('NG')
+                    fins_instance.memory_area_write(FinsPLCMemoryAreas().DATA_MEMORY_WORD,register_ng,b'\x00\x01',1)
+                    cv2.putText(show1, 'NG',(result_width_display,result_height_display),cv2.FONT_HERSHEY_COMPLEX, 4,(0,0,255),5)
+                    window['result_cam1'].update(value= 'NG', text_color='red')    
+                    myresult1 = 1         
+                        
+
+        if myresult1 == 0:
+            print('OK')
+            fins_instance.memory_area_write(FinsPLCMemoryAreas().DATA_MEMORY_WORD,(3000).to_bytes(2, byteorder='big') + b'\x00',b'\x00\x01',1)
+            cv2.putText(show1, 'OK',(result_width_display,result_height_display),cv2.FONT_HERSHEY_COMPLEX, 4,(0,255,0),5)
+            window['result_cam1'].update(value= 'OK', text_color='green')
+
+        imgbytes1 = cv2.imencode('.png',show1)[1].tobytes()
+        window['image1'].update(data= imgbytes1)
+
+
+
+
+def test_pattern2(model,size,conf):
+    read_2006 = fins_instance.memory_area_read(FinsPLCMemoryAreas().DATA_MEMORY_WORD,b'\x07\xD6\x00') # doc thanh ghi 2006
+    if read_2006 ==b'\xc0\x00\x02\x00\x19\x00\x00\x01\x00`\x01\x01\x00@\x00%':  # gia tri 37
+        img2_orgin = my_callback2.image  
+        img2_orgin = img2_orgin[50:530,70:710]
+        img2_orgin = img2_orgin.copy()
+
+        # ghi vao D2002 gia tri 0
+        fins_instance.memory_area_write(FinsPLCMemoryAreas().DATA_MEMORY_WORD,b'\x07\xD2\x00',b'\x00\x00',1)
+
+        img2_orgin = cv2.cvtColor(img2_orgin, cv2.COLOR_BGR2RGB) 
+
+        result2 = model(img2_orgin,size= size,conf = conf)
+
+        table2 = result2.pandas().xyxy[0]
+
+        area_remove2 = []
+
+        myresult2 =0 
+
+        for item in range(len(table2.index)):
+            width2 = table2['xmax'][item] - table2['xmin'][item]
+            height2 = table2['ymax'][item] - table2['ymin'][item]
+            #area2 = width2*height2
+            label_name = table2['name'][item]
+            for i2 in range(len(model2.names)):
+                if values[f'{model2.names[i2]}_2'] == True:
+                    #if values[f'{model2.names[i2]}_WH'] == True:
+                    if label_name == model2.names[i2]:
+                        if width2 < int(values[f'{model2.names[i2]}_Wn_2']): 
+                            table2.drop(item, axis=0, inplace=True)
+                            area_remove2.append(item)
+                        elif width2 > int(values[f'{model2.names[i2]}_Wx_2']): 
+                            table2.drop(item, axis=0, inplace=True)
+                            area_remove2.append(item)
+                        elif height2 < int(values[f'{model2.names[i2]}_Hn_2']): 
+                            table2.drop(item, axis=0, inplace=True)
+                            area_remove2.append(item)
+                        elif height2 > int(values[f'{model2.names[i2]}_Hx_2']): 
+                            table2.drop(item, axis=0, inplace=True)
+                            area_remove2.append(item)
+                if values[f'{model2.names[i2]}_2'] == False:
+                    if label_name == model2.names[i2]:
+                        table2.drop(item, axis=0, inplace=True)
+                        area_remove2.append(item)
+
+        names2 = list(table2['name'])
+
+        show2 = np.squeeze(result2.render(area_remove2))
+        show2 = cv2.resize(show2, (image_width_display,image_height_display), interpolation = cv2.INTER_AREA)
+
+        #ta = time.time()
+        for i2 in range(len(model2.names)):
+            register_ng = (4002 + i1*2).to_bytes(2, byteorder='big') + b'\x00'
+            if values[f'{model2.names[i2]}_OK_2'] == True:
+                len_name2 = 0
+                for name2 in names2:
+                    if name2 == model2.names[i2]:
+                        len_name2 +=1
+                if len_name2 != int(values[f'{model2.names[i2]}_Num_2']):
+                    print('NG')
+                    fins_instance.memory_area_write(FinsPLCMemoryAreas().DATA_MEMORY_WORD,register_ng,b'\x00\x01',1)
+                    cv2.putText(show2, 'NG',(result_width_display,result_height_display),cv2.FONT_HERSHEY_COMPLEX, 4,(0,0,255),5)
+                    window['result_cam2'].update(value= 'NG', text_color='red')
+                    myresult2 = 1
+                    break
+
+            if values[f'{model2.names[i2]}_NG_2'] == True:
+                if model2.names[i2] in names2:
+                    print('NG')
+                    fins_instance.memory_area_write(FinsPLCMemoryAreas().DATA_MEMORY_WORD,register_ng,b'\x00\x01',1)
+                    cv2.putText(show2, 'NG',(result_width_display,result_height_display),cv2.FONT_HERSHEY_COMPLEX, 4,(0,0,255),5)
+                    window['result_cam2'].update(value= 'NG', text_color='red')    
+                    myresult2 = 1      
+                    break    
+
+        if myresult2 == 0:
+            print('OK')
+            fins_instance.memory_area_write(FinsPLCMemoryAreas().DATA_MEMORY_WORD,(4000).to_bytes(2, byteorder='big') + b'\x00',b'\x00\x01',1)
+            cv2.putText(show2, 'OK',(result_width_display,result_height_display),cv2.FONT_HERSHEY_COMPLEX, 4,(0,255,0),5)
+            window['result_cam2'].update(value= 'OK', text_color='green')
+
+        imgbytes2 = cv2.imencode('.png',show2)[1].tobytes()
+        window['image2'].update(data= imgbytes2)
 
 
 def task_camera1(model,size,conf):
@@ -704,7 +887,11 @@ def task_camera1(model,size,conf):
                         elif height1 > f'{model1.names[i1]}_Hx_1': 
                             table1.drop(item, axis=0, inplace=True)
                             area_remove1.append(item)
-
+                if values[f'{model1.names[i1]}_1'] == False:
+                    if label_name == model1.names[i1]:
+                        table1.drop(item, axis=0, inplace=True)
+                        area_remove1.append(item)
+                        
         names1 = list(table1['name'])
         print(names1)
 
@@ -949,6 +1136,10 @@ def task_camera1_snap(model,size,conf):
                         elif height1 > int(values[f'{model1.names[i1]}_Hx_1']): 
                             table1.drop(item, axis=0, inplace=True)
                             area_remove1.append(item)
+                if values[f'{model1.names[i1]}_1'] == False:
+                    if label_name == model1.names[i1]:
+                        table1.drop(item, axis=0, inplace=True)
+                        area_remove1.append(item)
 
         names1 = list(table1['name'])
 
@@ -1032,6 +1223,10 @@ def task_camera2_snap(model,size,conf):
                         elif height2 > int(values[f'{model2.names[i2]}_Hx_2']): 
                             table2.drop(item, axis=0, inplace=True)
                             area_remove2.append(item)
+                if values[f'{model2.names[i2]}_2'] == False:
+                    if label_name == model2.names[i2]:
+                        table2.drop(item, axis=0, inplace=True)
+                        area_remove2.append(item)
 
         names2 = list(table2['name'])
 
@@ -1126,8 +1321,7 @@ def make_window(theme):
                 #[sg.Text('')],
                 [sg.Button('Snap', size=(8,1), font=('Helvetica',14),disabled=True  ,key='Snap2')],
                 [sg.Text('')],
-                [sg.Checkbox('Model',size=(6,1),font=('Helvetica',14), disabled=True, key='have_model2')]
-
+                [sg.Checkbox('Check',size=(6,1),font=('Helvetica',14), key='check_model2',enable_events=True,expand_x=True, expand_y=True)],
                 ],element_justification='center', vertical_alignment='top', relief= sg.RELIEF_FLAT),
 
             sg.Frame('',[   
@@ -1163,7 +1357,7 @@ def make_window(theme):
                 #[sg.Text('')],
                 [sg.Button('Snap', size=(8,1), font=('Helvetica',14),disabled=True ,key= 'Snap1')],
                 [sg.Text('')],
-                [sg.Checkbox('Model',size=(6,1),font=('Helvetica',14), disabled=True, key='have_model1')]
+                [sg.Checkbox('Check',size=(6,1),font=('Helvetica',14), key='check_model1',enable_events=True,expand_x=True, expand_y=True)],
                 #],element_justification='center', vertical_alignment='top', relief= sg.RELIEF_FLAT),
                 ],element_justification='center', vertical_alignment='top', relief= sg.RELIEF_FLAT),
                 
@@ -1175,7 +1369,7 @@ def make_window(theme):
                 [sg.Button('Detect', size=(8,1), font=('Helvetica',14),disabled=True,key= 'Detect1')],
                 #[sg.Text('',size=(4,2))],
                 [sg.Text('',size=(4,1))],
-                [sg.Combo(values=['1','2','3','4','5','6','7','8','9'], default_value='1',font=('Helvetica',20),size=(5, 100),text_color='navy',enable_events= True, key='choose_model'),],
+                [sg.Combo(values=['A22','A19','3','4','5','6','7','8','9'], default_value='A22',font=('Helvetica',20),size=(5, 100),text_color='navy',enable_events= True, key='choose_model'),],
                 #[sg.Button('SaveData', size=(8,1), font=('Helvetica',14),disabled=True,key= 'SaveData1')],
 
                 ],element_justification='center', vertical_alignment='top', relief= sg.RELIEF_FLAT),
@@ -1344,8 +1538,6 @@ error_cam2 = True
 
 #window['result_cam1'].update(value= 'Wait', text_color='yellow')
 #window['result_cam2'].update(value= 'Wait', text_color='yellow')
-
-
 
 
 # connected = False
@@ -1530,7 +1722,6 @@ try:
                 result_width_display = image_width_display - 190
                 result_height_display = 100 
 
-
         if event =='Administrator':
             login_password = 'vu123'  # helloworld
             password = sg.popup_get_text(
@@ -1561,9 +1752,6 @@ try:
                 window['Change_2'].update(button_color='turquoise')
                 window['Detect1'].update(button_color='turquoise')
                 window['Detect2'].update(button_color='turquoise')
-
-                window['have_model1'].update(disabled=False)
-                window['have_model2'].update(disabled=False)
 
                 window['have_save_OK_1'].update(disabled=False)
                 window['have_save_NG_1'].update(disabled=False)
@@ -1779,8 +1967,14 @@ try:
         task_camera1_snap(model=model1,size= 416,conf= values['conf_thres1']/100)
         task_camera2_snap(model=model2,size= 416,conf= values['conf_thres2']/100)
 
-        program_camera1(model=model1,size= 416,conf= values['conf_thres1']/100)
-        program_camera2(model=model2,size= 416,conf= values['conf_thres2']/100)
+        #program_camera1(model=model1,size= 416,conf= values['conf_thres1']/100)
+        #program_camera2(model=model2,size= 416,conf= values['conf_thres2']/100)
+
+        #test_pattern1(model=model1,size= 416,conf= values['conf_thres1']/100)
+        #test_pattern2(model=model2,size= 416,conf= values['conf_thres2']/100)
+
+
+
 
 
         #task_camera1(model=model1,size= 416,conf= values['conf_thres1']/100)
@@ -1840,165 +2034,358 @@ try:
 
 
         if recording1:
-            if values['have_model1'] == True:
-                img1_orgin = my_callback1.image 
-                img1_orgin = img1_orgin[50:530,70:710]
-                img1_orgin = img1_orgin.copy()
-                img1_orgin = cv2.cvtColor(img1_orgin, cv2.COLOR_BGR2RGB)                              
-                result1 = model1(img1_orgin,size= 416,conf= values['conf_thres1']/100)             
-                table1 = result1.pandas().xyxy[0]
-                area_remove1 = []
+            # if values['have_model1'] == True:
+            #     img1_orgin = my_callback1.image 
+            #     img1_orgin = img1_orgin[50:530,70:710]
+            #     img1_orgin = img1_orgin.copy()
+            #     img1_orgin = cv2.cvtColor(img1_orgin, cv2.COLOR_BGR2RGB)                              
+            #     result1 = model1(img1_orgin,size= 416,conf= values['conf_thres1']/100)             
+            #     table1 = result1.pandas().xyxy[0]
+            #     area_remove1 = []
 
-                myresult1 =0 
+            #     myresult1 =0 
 
-                for item in range(len(table1.index)):
-                    width1 = table1['xmax'][item] - table1['xmin'][item]
-                    height1 = table1['ymax'][item] - table1['ymin'][item]
-                    #area1 = width1*height1
-                    label_name = table1['name'][item]
-                    for i1 in range(len(model1.names)):
-                        if values[f'{model1.names[i1]}_1'] == True:
-                            #if values[f'{model1.names[i1]}_WH'] == True:
-                            if label_name == model1.names[i1]:
-                                if width1 < int(values[f'{model1.names[i1]}_Wn_1']): 
-                                    table1.drop(item, axis=0, inplace=True)
-                                    area_remove1.append(item)
-                                elif width1 > int(values[f'{model1.names[i1]}_Wx_1']): 
-                                    table1.drop(item, axis=0, inplace=True)
-                                    area_remove1.append(item)
-                                elif height1 < int(values[f'{model1.names[i1]}_Hn_1']): 
-                                    table1.drop(item, axis=0, inplace=True)
-                                    area_remove1.append(item)
-                                elif height1 > int(values[f'{model1.names[i1]}_Hx_1']): 
-                                    table1.drop(item, axis=0, inplace=True)
-                                    area_remove1.append(item)
+            #     for item in range(len(table1.index)):
+            #         width1 = table1['xmax'][item] - table1['xmin'][item]
+            #         height1 = table1['ymax'][item] - table1['ymin'][item]
+            #         #area1 = width1*height1
+            #         label_name = table1['name'][item]
+            #         for i1 in range(len(model1.names)):
+            #             if values[f'{model1.names[i1]}_1'] == True:
+            #                 #if values[f'{model1.names[i1]}_WH'] == True:
+            #                 if label_name == model1.names[i1]:
+            #                     if width1 < int(values[f'{model1.names[i1]}_Wn_1']): 
+            #                         table1.drop(item, axis=0, inplace=True)
+            #                         area_remove1.append(item)
+            #                     elif width1 > int(values[f'{model1.names[i1]}_Wx_1']): 
+            #                         table1.drop(item, axis=0, inplace=True)
+            #                         area_remove1.append(item)
+            #                     elif height1 < int(values[f'{model1.names[i1]}_Hn_1']): 
+            #                         table1.drop(item, axis=0, inplace=True)
+            #                         area_remove1.append(item)
+            #                     elif height1 > int(values[f'{model1.names[i1]}_Hx_1']): 
+            #                         table1.drop(item, axis=0, inplace=True)
+            #                         area_remove1.append(item)
 
-                names1 = list(table1['name'])
+            #     names1 = list(table1['name'])
 
-                show1 = np.squeeze(result1.render(area_remove1))
-                show1 = cv2.resize(show1, (image_width_display,image_height_display), interpolation = cv2.INTER_AREA)
+            #     show1 = np.squeeze(result1.render(area_remove1))
+            #     show1 = cv2.resize(show1, (image_width_display,image_height_display), interpolation = cv2.INTER_AREA)
         
-                #ta = time.time()
-                for i1 in range(len(model1.names)):
-                    if values[f'{model1.names[i1]}_OK_1'] == True:
-                        len_name1 = 0
-                        for name1 in names1:
-                            if name1 == model1.names[i1]:
-                                len_name1 +=1
-                        if len_name1 != int(values[f'{model1.names[i1]}_Num_1']):
-                            print('NG')
-                            cv2.putText(show1, 'NG',(result_width_display,result_height_display),cv2.FONT_HERSHEY_COMPLEX, 4,(0,0,255),5)
-                            window['result_cam1'].update(value= 'NG', text_color='red')
-                            myresult1 = 1
-                            break
+            #     #ta = time.time()
+            #     for i1 in range(len(model1.names)):
+            #         if values[f'{model1.names[i1]}_OK_1'] == True:
+            #             len_name1 = 0
+            #             for name1 in names1:
+            #                 if name1 == model1.names[i1]:
+            #                     len_name1 +=1
+            #             if len_name1 != int(values[f'{model1.names[i1]}_Num_1']):
+            #                 print('NG')
+            #                 cv2.putText(show1, 'NG',(result_width_display,result_height_display),cv2.FONT_HERSHEY_COMPLEX, 4,(0,0,255),5)
+            #                 window['result_cam1'].update(value= 'NG', text_color='red')
+            #                 myresult1 = 1
+            #                 break
 
-                    if values[f'{model1.names[i1]}_NG_1'] == True:
-                        if model1.names[i1] in names1:
-                            print('NG')
-                            cv2.putText(show1, 'NG',(result_width_display,result_height_display),cv2.FONT_HERSHEY_COMPLEX, 4,(0,0,255),5)
-                            window['result_cam1'].update(value= 'NG', text_color='red')    
-                            myresult1 = 1         
-                            break    
+            #         if values[f'{model1.names[i1]}_NG_1'] == True:
+            #             if model1.names[i1] in names1:
+            #                 print('NG')
+            #                 cv2.putText(show1, 'NG',(result_width_display,result_height_display),cv2.FONT_HERSHEY_COMPLEX, 4,(0,0,255),5)
+            #                 window['result_cam1'].update(value= 'NG', text_color='red')    
+            #                 myresult1 = 1         
+            #                 break    
 
-                if myresult1 == 0:
-                    print('OK')
-                    cv2.putText(show1, 'OK',(result_width_display,result_height_display),cv2.FONT_HERSHEY_COMPLEX, 4,(0,255,0),5)
-                    window['result_cam1'].update(value= 'OK', text_color='green')
+            #     if myresult1 == 0:
+            #         print('OK')
+            #         cv2.putText(show1, 'OK',(result_width_display,result_height_display),cv2.FONT_HERSHEY_COMPLEX, 4,(0,255,0),5)
+            #         window['result_cam1'].update(value= 'OK', text_color='green')
                 
+            #     imgbytes1 = cv2.imencode('.png',show1)[1].tobytes()
+            #     window['image1'].update(data= imgbytes1)
+            # else:
+            img1_orgin = my_callback1.image 
+            img1_orgin = img1_orgin[50:530,70:710]
+            img1_orgin = img1_orgin.copy()
+            img1_orgin = cv2.cvtColor(img1_orgin, cv2.COLOR_BGR2RGB) 
+            img1_resize = cv2.resize(img1_orgin,(image_width_display,image_height_display))
+            if img1_orgin is not None:
+                show1 = img1_resize
                 imgbytes1 = cv2.imencode('.png',show1)[1].tobytes()
-                window['image1'].update(data= imgbytes1)
-            else:
-                img1_orgin = my_callback1.image 
-                img1_orgin = img1_orgin[50:530,70:710]
-                img1_orgin = img1_orgin.copy()
-                img1_orgin = cv2.cvtColor(img1_orgin, cv2.COLOR_BGR2RGB) 
-                img1_resize = cv2.resize(img1_orgin,(image_width_display,image_height_display))
-                if img1_orgin is not None:
-                    show1 = img1_resize
-                    imgbytes1 = cv2.imencode('.png',show1)[1].tobytes()
-                    window['image1'].update(data=imgbytes1)
-                    window['result_cam1'].update(value='')
+                window['image1'].update(data=imgbytes1)
+                window['result_cam1'].update(value='')
 
 
         if recording2:
-            if values['have_model2'] == True:
-                img2_orgin = my_callback2.image  
-                img2_orgin = img2_orgin[50:530,70:710]
-                img2_orgin = img2_orgin.copy()
-                img2_orgin = cv2.cvtColor(img2_orgin, cv2.COLOR_BGR2RGB)                              
-                result2 = model2(img2_orgin,size= 416,conf= values['conf_thres2']/100)             
-                table2 = result2.pandas().xyxy[0]
-                area_remove2 = []
+            # if values['have_model2'] == True:
+            #     img2_orgin = my_callback2.image  
+            #     img2_orgin = img2_orgin[50:530,70:710]
+            #     img2_orgin = img2_orgin.copy()
+            #     img2_orgin = cv2.cvtColor(img2_orgin, cv2.COLOR_BGR2RGB)                              
+            #     result2 = model2(img2_orgin,size= 416,conf= values['conf_thres2']/100)             
+            #     table2 = result2.pandas().xyxy[0]
+            #     area_remove2 = []
 
-                myresult2 =0 
+            #     myresult2 =0 
 
-                for item in range(len(table2.index)):
-                    width2 = table2['xmax'][item] - table2['xmin'][item]
-                    height2 = table2['ymax'][item] - table2['ymin'][item]
-                    #area2 = width2*height2
-                    label_name = table2['name'][item]
-                    for i2 in range(len(model2.names)):
-                        if values[f'{model2.names[i2]}_2'] == True:
-                            if label_name == model2.names[i2]:
-                                if width2 < int(values[f'{model2.names[i2]}_Wn_2']): 
-                                    table2.drop(item, axis=0, inplace=True)
-                                    area_remove2.append(item)
-                                elif width2 > int(values[f'{model2.names[i2]}_Wx_2']): 
-                                    table2.drop(item, axis=0, inplace=True)
-                                    area_remove2.append(item)
-                                elif height2 < int(values[f'{model2.names[i2]}_Hn_2']): 
-                                    table2.drop(item, axis=0, inplace=True)
-                                    area_remove2.append(item)
-                                elif height2 > int(values[f'{model2.names[i2]}_Hx_2']): 
-                                    table2.drop(item, axis=0, inplace=True)
-                                    area_remove2.append(item)
+            #     for item in range(len(table2.index)):
+            #         width2 = table2['xmax'][item] - table2['xmin'][item]
+            #         height2 = table2['ymax'][item] - table2['ymin'][item]
+            #         #area2 = width2*height2
+            #         label_name = table2['name'][item]
+            #         for i2 in range(len(model2.names)):
+            #             if values[f'{model2.names[i2]}_2'] == True:
+            #                 if label_name == model2.names[i2]:
+            #                     if width2 < int(values[f'{model2.names[i2]}_Wn_2']): 
+            #                         table2.drop(item, axis=0, inplace=True)
+            #                         area_remove2.append(item)
+            #                     elif width2 > int(values[f'{model2.names[i2]}_Wx_2']): 
+            #                         table2.drop(item, axis=0, inplace=True)
+            #                         area_remove2.append(item)
+            #                     elif height2 < int(values[f'{model2.names[i2]}_Hn_2']): 
+            #                         table2.drop(item, axis=0, inplace=True)
+            #                         area_remove2.append(item)
+            #                     elif height2 > int(values[f'{model2.names[i2]}_Hx_2']): 
+            #                         table2.drop(item, axis=0, inplace=True)
+            #                         area_remove2.append(item)
 
-                names2 = list(table2['name'])
+            #     names2 = list(table2['name'])
 
-                show2 = np.squeeze(result2.render(area_remove2))
-                show2 = cv2.resize(show2, (image_width_display,image_height_display), interpolation = cv2.INTER_AREA)
+            #     show2 = np.squeeze(result2.render(area_remove2))
+            #     show2 = cv2.resize(show2, (image_width_display,image_height_display), interpolation = cv2.INTER_AREA)
         
-                #ta = time.time()
-                for i2 in range(len(model2.names)):
-                    if values[f'{model2.names[i2]}_OK_2'] == True:
-                        len_name2 = 0
-                        for name2 in names2:
-                            if name2 == model2.names[i2]:
-                                len_name2 +=2
-                        if len_name2 != int(values[f'{model2.names[i2]}_Num_2']):
-                            print('NG')
-                            cv2.putText(show2, 'NG',(result_width_display,result_height_display),cv2.FONT_HERSHEY_COMPLEX, 4,(0,0,255),5)
-                            window['result_cam2'].update(value= 'NG', text_color='red')
-                            myresult2 = 1
-                            break
+            #     #ta = time.time()
+            #     for i2 in range(len(model2.names)):
+            #         if values[f'{model2.names[i2]}_OK_2'] == True:
+            #             len_name2 = 0
+            #             for name2 in names2:
+            #                 if name2 == model2.names[i2]:
+            #                     len_name2 +=2
+            #             if len_name2 != int(values[f'{model2.names[i2]}_Num_2']):
+            #                 print('NG')
+            #                 cv2.putText(show2, 'NG',(result_width_display,result_height_display),cv2.FONT_HERSHEY_COMPLEX, 4,(0,0,255),5)
+            #                 window['result_cam2'].update(value= 'NG', text_color='red')
+            #                 myresult2 = 1
+            #                 break
 
-                    if values[f'{model2.names[i2]}_NG_2'] == True:
-                        if model2.names[i2] in names2:
-                            print('NG')
-                            cv2.putText(show2, 'NG',(result_width_display,result_height_display),cv2.FONT_HERSHEY_COMPLEX, 4,(0,0,255),5)
-                            window['result_cam2'].update(value= 'NG', text_color='red')    
-                            myresult2 = 1         
-                            break    
+            #         if values[f'{model2.names[i2]}_NG_2'] == True:
+            #             if model2.names[i2] in names2:
+            #                 print('NG')
+            #                 cv2.putText(show2, 'NG',(result_width_display,result_height_display),cv2.FONT_HERSHEY_COMPLEX, 4,(0,0,255),5)
+            #                 window['result_cam2'].update(value= 'NG', text_color='red')    
+            #                 myresult2 = 1         
+            #                 break    
 
-                if myresult2 == 0:
-                    print('OK')
-                    cv2.putText(show2, 'OK',(result_width_display,result_height_display),cv2.FONT_HERSHEY_COMPLEX, 4,(0,255,0),5)
-                    window['result_cam2'].update(value= 'OK', text_color='green')
+            #     if myresult2 == 0:
+            #         print('OK')
+            #         cv2.putText(show2, 'OK',(result_width_display,result_height_display),cv2.FONT_HERSHEY_COMPLEX, 4,(0,255,0),5)
+            #         window['result_cam2'].update(value= 'OK', text_color='green')
                 
+            #     imgbytes2 = cv2.imencode('.png',show2)[1].tobytes()
+            #     window['image2'].update(data= imgbytes2)
+            # else:
+            img2_orgin = my_callback2.image  
+            img2_orgin = img2_orgin[50:530,70:710]
+            img2_orgin = img2_orgin.copy()
+            img2_orgin = cv2.cvtColor(img2_orgin, cv2.COLOR_BGR2RGB) 
+            img2_resize = cv2.resize(img2_orgin,(image_width_display,image_height_display))
+            if img2_orgin is not None:
+                show2 = img2_resize
                 imgbytes2 = cv2.imencode('.png',show2)[1].tobytes()
-                window['image2'].update(data= imgbytes2)
-            else:
-                img2_orgin = my_callback2.image  
-                img2_orgin = img2_orgin[50:530,70:710]
-                img2_orgin = img2_orgin.copy()
-                img2_orgin = cv2.cvtColor(img2_orgin, cv2.COLOR_BGR2RGB) 
-                img2_resize = cv2.resize(img2_orgin,(image_width_display,image_height_display))
-                if img2_orgin is not None:
-                    show2 = img2_resize
-                    imgbytes2 = cv2.imencode('.png',show2)[1].tobytes()
-                    window['image2'].update(data=imgbytes2)
-                    window['result_cam2'].update(value='')
+                window['image2'].update(data=imgbytes2)
+                window['result_cam2'].update(value='')
 
+
+
+
+        if event == 'check_model1' and values['check_model1'] == True:
+            check_ok=0
+            directory1 = 'C:/Check1/'
+            if os.listdir(directory1) == []:
+                print('folder 1 empty')
+            else:
+                print('received folder 1')
+
+                for path1 in glob.glob('C:/Check1/*'):
+                    name = path1[9:]
+
+                    img1_orgin = cv2.imread(path1)
+
+
+                    img1_orgin = cv2.resize(img1_orgin,(640,480))  
+
+                    img1_orgin = cv2.cvtColor(img1_orgin, cv2.COLOR_BGR2RGB)     
+
+
+                    result1 = model1(img1_orgin,size= 416,conf = values['conf_thres1']/100)
+
+                    table1 = result1.pandas().xyxy[0]
+
+                    area_remove1 = []
+
+                    myresult1 =0 
+
+                    for item in range(len(table1.index)):
+                        width1 = table1['xmax'][item] - table1['xmin'][item]
+                        height1 = table1['ymax'][item] - table1['ymin'][item]
+                        #area1 = width1*height1
+                        label_name = table1['name'][item]
+                        for i1 in range(len(model1.names)):
+                            if values[f'{model1.names[i1]}_1'] == True:
+                                #if values[f'{model1.names[i1]}_WH'] == True:
+                                if label_name == model1.names[i1]:
+                                    if width1 < int(values[f'{model1.names[i1]}_Wn_1']): 
+                                        table1.drop(item, axis=0, inplace=True)
+                                        area_remove1.append(item)
+                                    elif width1 > int(values[f'{model1.names[i1]}_Wx_1']): 
+                                        table1.drop(item, axis=0, inplace=True)
+                                        area_remove1.append(item)
+                                    elif height1 < int(values[f'{model1.names[i1]}_Hn_1']): 
+                                        table1.drop(item, axis=0, inplace=True)
+                                        area_remove1.append(item)
+                                    elif height1 > int(values[f'{model1.names[i1]}_Hx_1']): 
+                                        table1.drop(item, axis=0, inplace=True)
+                                        area_remove1.append(item)
+                            if values[f'{model1.names[i1]}_1'] == False:
+                                if label_name == model1.names[i1]:
+                                    table1.drop(item, axis=0, inplace=True)
+                                    area_remove1.append(item)
+
+                    names1 = list(table1['name'])
+
+                    show1 = np.squeeze(result1.render(area_remove1))
+                    show1 = cv2.resize(show1, (image_width_display,image_height_display), interpolation = cv2.INTER_AREA)
+
+                    #ta = time.time()
+                    for i1 in range(len(model1.names)):
+                        #register_ng = (3002 + i1*2).to_bytes(2, byteorder='big') + b'\x00'
+
+                        if values[f'{model1.names[i1]}_OK_1'] == True:
+                            len_name1 = 0
+                            for name1 in names1:
+                                if name1 == model1.names[i1]:
+                                    len_name1 +=1
+                            if len_name1 != int(values[f'{model1.names[i1]}_Num_1']):
+                                print('NG')
+                                #fins_instance.memory_area_write(FinsPLCMemoryAreas().DATA_MEMORY_WORD,register_ng,b'\x00\x01',1)
+                                cv2.putText(show1, 'NG',(result_width_display,result_height_display),cv2.FONT_HERSHEY_COMPLEX, 4,(0,0,255),5)
+                                window['result_cam1'].update(value= 'NG', text_color='red')
+                                myresult1 = 1
+                                
+
+                        elif values[f'{model1.names[i1]}_NG_1'] == True:
+                            if model1.names[i1] in names1:
+                                print('NG')
+                                #fins_instance.memory_area_write(FinsPLCMemoryAreas().DATA_MEMORY_WORD,register_ng,b'\x00\x01',1)
+                                cv2.putText(show1, 'NG',(result_width_display,result_height_display),cv2.FONT_HERSHEY_COMPLEX, 4,(0,0,255),5)
+                                window['result_cam1'].update(value= 'NG', text_color='red')    
+                                myresult1 = 1         
+                                    
+
+                    if myresult1 == 0:
+                        print('OK')
+                        check_ok = 1
+                        #fins_instance.memory_area_write(FinsPLCMemoryAreas().DATA_MEMORY_WORD,(3000).to_bytes(2, byteorder='big') + b'\x00',b'\x00\x01',1)
+                        cv2.putText(show1, 'OK',(result_width_display,result_height_display),cv2.FONT_HERSHEY_COMPLEX, 4,(0,255,0),5)
+                        window['result_cam1'].update(value= 'OK', text_color='green')
+
+                    imgbytes1 = cv2.imencode('.png',show1)[1].tobytes()
+                    window['image1'].update(data= imgbytes1)
+
+                    if check_ok == 1:
+                        break
+
+
+        if event == 'check_model2' and values['check_model2'] == True:
+            check_ok=0
+            directory2 = 'C:/Check2/'
+            if os.listdir(directory2) == []:
+                print('folder 2 empty')
+            else:
+                print('received folder 2')
+
+                for path2 in glob.glob('C:/Check2/*'):
+                    name = path2[9:]
+
+                    img2_orgin = cv2.imread(path2)
+                    img2_orgin = cv2.resize(img2_orgin,(640,480))  
+
+                    img2_orgin = cv2.cvtColor(img2_orgin, cv2.COLOR_BGR2RGB) 
+
+                    result2 = model2(img2_orgin,size= 416,conf = values['conf_thres2']/100)
+
+                    table2 = result2.pandas().xyxy[0]
+
+                    area_remove2 = []
+
+                    myresult2 =0 
+
+                    for item in range(len(table2.index)):
+                        width2 = table2['xmax'][item] - table2['xmin'][item]
+                        height2 = table2['ymax'][item] - table2['ymin'][item]
+                        #area2 = width2*height2
+                        label_name = table2['name'][item]
+                        for i2 in range(len(model2.names)):
+                            if values[f'{model2.names[i2]}_2'] == True:
+                                #if values[f'{model2.names[i2]}_WH'] == True:
+                                if label_name == model2.names[i2]:
+                                    if width2 < int(values[f'{model2.names[i2]}_Wn_2']): 
+                                        table2.drop(item, axis=0, inplace=True)
+                                        area_remove2.append(item)
+                                    elif width2 > int(values[f'{model2.names[i2]}_Wx_2']): 
+                                        table2.drop(item, axis=0, inplace=True)
+                                        area_remove2.append(item)
+                                    elif height2 < int(values[f'{model2.names[i2]}_Hn_2']): 
+                                        table2.drop(item, axis=0, inplace=True)
+                                        area_remove2.append(item)
+                                    elif height2 > int(values[f'{model2.names[i2]}_Hx_2']): 
+                                        table2.drop(item, axis=0, inplace=True)
+                                        area_remove2.append(item)
+                            if values[f'{model2.names[i2]}_2'] == False:
+                                if label_name == model2.names[i2]:
+                                    table2.drop(item, axis=0, inplace=True)
+                                    area_remove2.append(item)
+
+                    names2 = list(table2['name'])
+
+                    show2 = np.squeeze(result2.render(area_remove2))
+                    show2 = cv2.resize(show2, (image_width_display,image_height_display), interpolation = cv2.INTER_AREA)
+            
+                    #ta = time.time()
+                    for i2 in range(len(model2.names)):
+                        #register_ng = (4002 + i1*2).to_bytes(2, byteorder='big') + b'\x00'
+                        if values[f'{model2.names[i2]}_OK_2'] == True:
+                            len_name2 = 0
+                            for name2 in names2:
+                                if name2 == model2.names[i2]:
+                                    len_name2 +=1
+                            if len_name2 != int(values[f'{model2.names[i2]}_Num_2']):
+                                print('NG')
+                                #fins_instance.memory_area_write(FinsPLCMemoryAreas().DATA_MEMORY_WORD,register_ng,b'\x00\x01',1)
+                                cv2.putText(show2, 'NG',(result_width_display,result_height_display),cv2.FONT_HERSHEY_COMPLEX, 4,(0,0,255),5)
+                                window['result_cam2'].update(value= 'NG', text_color='red')
+                                myresult2 = 1
+                                break
+
+                        if values[f'{model2.names[i2]}_NG_2'] == True:
+                            if model2.names[i2] in names2:
+                                print('NG')
+                                #fins_instance.memory_area_write(FinsPLCMemoryAreas().DATA_MEMORY_WORD,register_ng,b'\x00\x01',1)
+                                cv2.putText(show2, 'NG',(result_width_display,result_height_display),cv2.FONT_HERSHEY_COMPLEX, 4,(0,0,255),5)
+                                window['result_cam2'].update(value= 'NG', text_color='red')    
+                                myresult2 = 1      
+                                break    
+
+                    if myresult2 == 0:
+                        print('OK')
+                        check_ok = 1
+                        #fins_instance.memory_area_write(FinsPLCMemoryAreas().DATA_MEMORY_WORD,(4000).to_bytes(2, byteorder='big') + b'\x00',b'\x00\x01',1)
+                        cv2.putText(show2, 'OK',(result_width_display,result_height_display),cv2.FONT_HERSHEY_COMPLEX, 4,(0,255,0),5)
+                        window['result_cam2'].update(value= 'OK', text_color='green')
+
+                    imgbytes2 = cv2.imencode('.png',show2)[1].tobytes()
+                    window['image2'].update(data= imgbytes2)
+
+                    if check_ok == 1:
+                        break
 
 
         if event == 'Pic1':
@@ -2128,6 +2515,10 @@ try:
                                 elif height1 > int(values[f'{model1.names[i1]}_Hx_1']): 
                                     table1.drop(item, axis=0, inplace=True)
                                     area_remove1.append(item)
+                        if values[f'{model1.names[i1]}_1'] == False:
+                            if label_name == model1.names[i1]:
+                                table1.drop(item, axis=0, inplace=True)
+                                area_remove1.append(item)
 
                 names1 = list(table1['name'])
 
@@ -2210,6 +2601,10 @@ try:
                                 elif height2 > int(values[f'{model2.names[i2]}_Hx_2']): 
                                     table2.drop(item, axis=0, inplace=True)
                                     area_remove2.append(item)
+                        if values[f'{model2.names[i2]}_2'] == False:
+                            if label_name == model2.names[i2]:
+                                table2.drop(item, axis=0, inplace=True)
+                                area_remove2.append(item)
 
                 names2 = list(table2['name'])
 

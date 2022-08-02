@@ -1,1 +1,1 @@
-model3=C:/Users/Administrator/Desktop/a47/best.pt
+model3=C:/Users/Administrator/Desktop/vu/combine/model/cam3/L82_C3_29_06_22.pt

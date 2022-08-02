@@ -566,6 +566,7 @@ class Detections:
                 s += '(no detections)'
 
             im = Image.fromarray(im.astype(np.uint8)) if isinstance(im, np.ndarray) else im  # from np
+
             if pprint:
                 LOGGER.info(s.rstrip(', '))
             if show:
