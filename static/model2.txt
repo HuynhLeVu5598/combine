@@ -1,1 +1,1 @@
-model2=C:/Users/Administrator/Desktop/vu/combine/model/cam2/L82_C2_29_06_22.pt
+model2=best.pt

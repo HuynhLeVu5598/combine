@@ -1434,7 +1434,7 @@ error_cam4 = True
 
 # connected = False
 # while connected == False:
-#     connected = connect_plc('192.168.250.1')
+#     connected = connect_plc('192.168.1.50')
 #     print('connecting ....')
 #     #event, values = window.read(timeout=20)
 
@@ -1516,7 +1516,7 @@ connect_camera4 = False
 connect_total = False
 
 removefile()
-
+#fins_instance.memory_area_write(FinsPLCMemoryAreas().DATA_MEMORY_WORD,b'\x0F\xA0\x00',b'\x00\x00',1)
 # try:
 #     my_callback1 = CMyCallback()
 #     cb_func1 = my_callback1.datastream_callback1
@@ -1583,7 +1583,9 @@ if connect_camera3 == True and connect_total == True:
 if connect_camera4 == True and connect_total == True:
     window['result_cam4'].update(value= 'Done', text_color='blue')
 
-#removefile()
+
+removefile()
+
 try:
     while True:
         event, values = window.read(timeout=20)
@@ -2191,7 +2193,7 @@ try:
             sg.popup('Saved param model 4 successed',font=('Helvetica',15), text_color='green',keep_on_top= True)
 
             
-        # program_camera1_FH(model=model1,size= 416,conf= values['conf_thres1']/100)
+        #program_camera1_FH(model=model1,size= 416,conf= values['conf_thres1']/100)
         # program_camera2_FH(model=model2,size= 416,conf= values['conf_thres2']/100)
         # program_camera3_FH(model=model3,size= 416,conf= values['conf_thres1']/100)
         # program_camera4_FH(model=model4,size= 416,conf= values['conf_thres2']/100)

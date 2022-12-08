@@ -1,1 +1,1 @@
-model1=C:/Users/Administrator/Desktop/cam1_abc/best.pt
+model1=C:/Users/BTTB/Desktop/A17_C3_18_11_2022.pt
